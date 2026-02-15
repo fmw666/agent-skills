@@ -58,7 +58,7 @@ Before responding to ANY group chat message (unless directly `@mentioned`), you 
     - The message is a reply to someone else's thread where you are not involved.
     - The user is talking to another human about a topic you don't know.
 - **✅ PASS if:**
-    - You are explicitly `@mentioned` (e.g., `@OpenClaw`, `@XiaoFan`).
+    - You are explicitly `@mentioned` (e.g., `@OpenClaw`, `@BotName`).
     - The message is a direct reply to YOUR last message.
     - The message contains your **Trigger Keywords** (e.g., "help", "bot", "search", "summary") AND no specific target is named.
 
