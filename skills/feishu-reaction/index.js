@@ -4,6 +4,8 @@ const path = require('path');
 
 // Load configuration
 const configPath = path.join(__dirname, 'config.json');
+const tokenCachePath = path.join(__dirname, 'token.json');
+
 let config = {};
 
 // Try loading from config.json
@@ -75,10 +77,50 @@ const SUPPORTED_EMOJIS = {
 };
 
 /**
- * Gets a tenant access token from Feishu.
+ * Reads token from cache. Returns null if missing or expired.
+ */
+function getCachedToken() {
+    try {
+        if (fs.existsSync(tokenCachePath)) {
+            const cache = JSON.parse(fs.readFileSync(tokenCachePath, 'utf8'));
+            // Expire 5 minutes early to be safe
+            if (Date.now() < (cache.expire_at - 300000)) {
+                return cache.token;
+            }
+        }
+    } catch (e) {
+        // Ignore cache errors
+    }
+    return null;
+}
+
+/**
+ * Saves token to cache.
+ */
+function saveToken(token, expireSeconds) {
+    try {
+        const data = {
+            token: token,
+            expire_at: Date.now() + (expireSeconds * 1000)
+        };
+        fs.writeFileSync(tokenCachePath, JSON.stringify(data));
+    } catch (e) {
+        console.warn("Warning: Failed to save token cache.");
+    }
+}
+
+/**
+ * Gets a tenant access token from Feishu (with Caching).
  * @returns {Promise<string>} The access token.
  */
-function getTenantAccessToken() {
+async function getTenantAccessToken() {
+    // 1. Check Cache
+    const cached = getCachedToken();
+    if (cached) {
+        return cached;
+    }
+
+    // 2. Fetch New
     return new Promise((resolve, reject) => {
         const postData = JSON.stringify({
             "app_id": config.appId,
@@ -103,6 +145,7 @@ function getTenantAccessToken() {
                     try {
                         const parsed = JSON.parse(data);
                         if (parsed.code === 0) {
+                            saveToken(parsed.tenant_access_token, parsed.expire);
                             resolve(parsed.tenant_access_token);
                         } else {
                             reject(new Error(`Feishu API Error: ${parsed.msg} (code: ${parsed.code})`));

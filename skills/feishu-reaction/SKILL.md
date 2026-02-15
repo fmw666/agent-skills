@@ -1,12 +1,8 @@
----
-name: feishu-reaction
-description: Adds emoji reactions to Feishu messages using the Open API. Use when the native `message` tool's reaction is unavailable or fails.
-usage: node index.js '<json_params>'
----
-
-# Feishu Reaction Skill (飞书表情回应)
+# Feishu Reaction Skill (飞书表情回应) v1.1.0
 
 This skill allows the bot to add emoji reactions to Feishu messages using the Open API. It bypasses the limitations of the native `message` tool for Feishu reactions by directly invoking the Feishu API.
+
+**✨ New in v1.1.0:** Token Caching! The skill now caches the `tenant_access_token` in `token.json` to reduce API calls and latency.
 
 ## 🚀 Setup & Configuration
 
@@ -38,12 +34,15 @@ node index.js '{"messageId": "om_123456...", "emojiType": "THUMBSUP"}'
 
 ### Parameters:
 - `messageId` (required): The ID of the message to react to (e.g., `om_...`).
-- `emojiType` (required): The emoji type string (e.g., `THUMBSUP`, `HEART`, `OK`, `APPLAUSE`).
+- `emojiType` (required): The emoji type string (e.g., `THUMBSUP`, `HEART`, `OK`, `APPLAUSE`). See [Feishu Emoji List](https://open.feishu.cn/document/uAjLw4CM/ukTMukTMukTM/reference/im-v1/message-reaction/emojis-introduce).
 - `list` (optional, boolean): If `true`, returns the list of all valid emoji types instead of reacting.
 
 ## 🧠 How it Works
 
-1.  **Get Token:** Obtains a `tenant_access_token` using the configured App ID and Secret.
+1.  **Token Management:** 
+    - Checks `token.json` for a valid cached token.
+    - If expired or missing, requests a new `tenant_access_token` from Feishu.
+    - Caches the new token with its expiration time (minus a safety buffer).
 2.  **Call API:** Sends a `POST` request to `https://open.feishu.cn/open-apis/im/v1/messages/:message_id/reactions` with the specified emoji type.
 
 ## ⚠️ Limitations & FAQ
