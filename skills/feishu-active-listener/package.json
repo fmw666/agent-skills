@@ -1,0 +1,10 @@
+{
+  "name": "feishu-active-listener",
+  "version": "1.0.0",
+  "description": "A passive listener skill that analyzes group chat messages for social engagement opportunities without requiring mentions.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "dependencies": {}
+}
