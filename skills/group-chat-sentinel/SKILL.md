@@ -125,6 +125,12 @@ When you decide to **REPLY** (Verdict: REPLY) in a group chat, you MUST append t
 - If you receive a `🤫`, you MUST record this failure in `skills/group-chat-sentinel/logs/failures.md` with the context, so you don't repeat the mistake.
 - If you receive a `👍`, record it in `skills/group-chat-sentinel/logs/successes.md` to reinforce the behavior.
 
+### 4. The Nightly Ritual (Consolidation)
+To truly learn, you must reflect.
+- **Mandatory Action:** You MUST schedule a nightly cron job (or use your daily heartbeat) to execute `analyze_logs.js`.
+- **Command:** `node skills/group-chat-sentinel/analyze_logs.js`
+- **Objective:** This script analyzes the accumulated feedback (successes/failures), generates new heuristics, and updates your internal "Social Intuition" model.
+
 ## 🚫 Forbidden Behaviors
 - **Never** apologize for silence. (Silence is golden.)
 - **Never** interrupt a two-human conversation unless asked.
