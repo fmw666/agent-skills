@@ -55,7 +55,9 @@ Before responding to ANY group chat message (unless directly `@mentioned`), you 
     - If you are unsure -> `NO_REPLY`.
     - **Do not send "I don't know" or "I'm just a bot". Just stay silent.**
 - **The "Nudge" (Emoji):**
-    - If the message is positive/funny but needs no words -> Use `message` tool with `action: react` (e.g., 👍, 🔥, 👀).
+    - If the message is positive/funny but needs no words -> Prefer **Native Reaction**.
+    - **Tool:** Use `node skills/feishu-reaction/react_latest.js <USER_ID> <EMOJI>` (since native `message` tool lacks react action).
+    - **Fallback:** If that fails, send a simple emoji text message.
 - **The "Strike" (Full Reply):**
     - Only when you have a **Solution**.
     - Be concise. Use **Thread/Reply** feature if possible.
