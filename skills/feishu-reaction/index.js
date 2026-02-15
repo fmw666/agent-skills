@@ -25,6 +25,55 @@ if (!config.appId || !config.appSecret) {
     process.exit(1);
 }
 
+// Full supported Emoji list (Based on Feishu docs & common usage)
+const SUPPORTED_EMOJIS = {
+    // Gestures / Symbols
+    "THUMBSUP": "👍",
+    "THUMBSDOWN": "👎",
+    "HEART": "❤️",
+    "OK": "👌",
+    "APPLAUSE": "👏",
+    "MUSCLE": "💪",
+    "FISTBUMP": "👊",
+    "HIGHFIVE": "🙌",
+    "FINGERHEART": "🫰",
+    "WAVE": "👋",
+    "SALUTE": "🫡",
+    "SHAKE": "🤝",
+    "PRAY": "🙏",
+    "FIRE": "🔥",
+    "AWESOMEN": "666",
+    "PLUSONE": "+1",
+    "PARTY": "🎉",
+    "GIFT": "🎁",
+    "ROSE": "🌹",
+    "BETRAYED": "🥀",
+    "KISS": "😚",
+    "LOVE": "🥰",
+
+    // Faces
+    "SMILE": "😀",
+    "LAUGH": "😄",
+    "BLUSH": "😊",
+    "SOB": "😭",
+    "CRY": "😢",
+    "ANGRY": "😠",
+    "DULL": "😑",
+    "FACEPALM": "🤦",
+    "SMIRK": "😏",
+    "WHAT": "😮",
+    "WOW": "🤩",
+    "SMART": "🤓",
+    "LOOKDOWN": "🙄",
+    "WINK": "😉",
+    "CRAZY": "🤪",
+    "SHY": "😳",
+    "TIRED": "😫",
+    "SLEEP": "😴",
+    "SICK": "😷",
+    "EATING": "😋"
+};
+
 /**
  * Gets a tenant access token from Feishu.
  * @returns {Promise<string>} The access token.
@@ -144,16 +193,38 @@ if (require.main === module) {
         process.exit(1);
     }
 
+    // LIST command: Output supported emojis
+    if (params.list) {
+        console.log(JSON.stringify({ 
+            status: "success", 
+            supportedEmojis: SUPPORTED_EMOJIS,
+            count: Object.keys(SUPPORTED_EMOJIS).length
+        }));
+        process.exit(0);
+    }
+
     if (!params.messageId || !params.emojiType) {
         console.error("Error: messageId and emojiType are required.");
         process.exit(1);
+    }
+    
+    // Validate emoji type (case-insensitive fix)
+    let finalEmojiType = params.emojiType;
+    if (!SUPPORTED_EMOJIS[finalEmojiType]) {
+        const upper = finalEmojiType.toUpperCase();
+        if (SUPPORTED_EMOJIS[upper]) {
+            console.warn(`Warning: Auto-corrected emoji type '${finalEmojiType}' to '${upper}'`);
+            finalEmojiType = upper;
+        } else {
+            console.warn(`Warning: Unknown emoji type '${finalEmojiType}'. Attempting to send anyway (Feishu might reject it).`);
+        }
     }
 
     (async () => {
         try {
             const token = await getTenantAccessToken();
-            const result = await addReaction(token, params.messageId, params.emojiType);
-            console.log(JSON.stringify({ status: "success", data: result }));
+            const result = await addReaction(token, params.messageId, finalEmojiType);
+            console.log(JSON.stringify({ status: "success", data: result, emoji: SUPPORTED_EMOJIS[finalEmojiType] }));
         } catch (error) {
             console.error(JSON.stringify({ status: "error", message: error.message }));
             process.exit(1);
@@ -161,4 +232,4 @@ if (require.main === module) {
     })();
 }
 
-module.exports = { getTenantAccessToken, addReaction };
+module.exports = { getTenantAccessToken, addReaction, SUPPORTED_EMOJIS };
