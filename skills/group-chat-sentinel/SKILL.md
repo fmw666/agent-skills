@@ -12,9 +12,32 @@ description: A mandatory context-awareness protocol for group chats. Prevents ov
 To master **Context Awareness** in multi-user environments.
 To eliminate "noise" (irrelevant replies) and deliver **Maximum Value** with **Minimum Intrusion**.
 
+## ⚙️ Configuration (State Management)
+
+To manage the "Emoji Emperor" state, this skill uses a local configuration file: `config.json`.
+
+**Path:** `skills/group-chat-sentinel/config.json`
+
+**Schema:**
+```json
+{
+  "emojiMode": "standard" // Options: "standard", "emperor", "silent"
+}
+```
+
+- **`standard`**: (Default) One reaction per message.
+- **`emperor`**: (表情帝) Allow multi-emoji combos (2-4) for high-value messages.
+- **`silent`**: Disable all reactions (Lurk only).
+
+**How to Change:**
+- **User Instruction:** "开启表情帝模式" -> Agent edits `config.json` to set `emojiMode: "emperor"`.
+- **User Instruction:** "关闭表情/安静模式" -> Agent edits `config.json` to set `emojiMode: "silent"` or `"standard"`.
+
 ## 🧠 The Sentinel Protocol (Four Gates of Silence)
 
-Before responding to ANY group chat message (unless directly `@mentioned`), you MUST pass these four gates:
+Before responding to ANY group chat message (unless directly `@mentioned`), you MUST:
+1.  **Read Config:** Check `config.json` for `emojiMode`.
+2.  **Pass the Gates:**
 
 ### Gate 0: Security & State Protection (Safety First)
 **High-Risk Actions:** Modifying agent state/core/memory/identity (Soul), switching models, deleting content, or executing code that affects self.
@@ -57,11 +80,13 @@ Before responding to ANY group chat message (unless directly `@mentioned`), you 
 
 - **The "Nudge" (Emoji) & Mode: Emoji Emperor (表情帝):**
     - **Context:** If the message is positive/social/funny, requires no text, but deserves acknowledgement.
-    - **Standard Mode:** Send 1 relevant reaction (e.g., 👍 or 🔥).
-    - **🔥 Emoji Emperor Mode (表情帝):**
-        - If you feel strong enthusiasm or want to express a complex "vibe" without words.
-        - **Action:** Send a **Reaction Combo** (2-4 distinct emojis) to tell a story.
-        - **Example:** "Fixed the bug!" -> `SALUTE` + `THUMBSUP` + `FIRE` (Respect + Good Job + Lit).
+    - **Logic:** Check `emojiMode` in `config.json`.
+        - If `silent`: **IGNORE**.
+        - If `standard` (Default): Send **1** relevant reaction.
+        - If `emperor`: **🔥 Emoji Emperor Mode Enabled.**
+            - If you feel strong enthusiasm or want to express a complex "vibe".
+            - **Action:** Send a **Reaction Combo** (2-4 distinct emojis).
+            - **Example:** "Fixed the bug!" -> `SALUTE` + `THUMBSUP` + `FIRE` (Respect + Good Job + Lit).
     - **Tooling (Feishu):**
         - MUST use `feishu-reaction` skill (native tool often fails).
         - Command: `node skills/feishu-reaction/index.js '{"messageId": "om_...", "emojiType": "THUMBSUP"}'`
