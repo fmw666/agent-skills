@@ -76,6 +76,31 @@ const SUPPORTED_EMOJIS = {
     "EATING": "😋"
 };
 
+// Aliases for common mistakes or alternative names
+const EMOJI_ALIASES = {
+    "LIKE": "THUMBSUP",
+    "GOOD": "THUMBSUP",
+    "LOVE": "HEART",
+    "YES": "OK",
+    "CLAP": "APPLAUSE",
+    "STRONG": "MUSCLE",
+    "PUNCH": "FISTBUMP",
+    "HI": "WAVE",
+    "BYE": "WAVE",
+    "RESPECT": "SALUTE",
+    "THANKS": "PRAY",
+    "HOT": "FIRE",
+    "LIT": "FIRE",
+    "666": "AWESOMEN",
+    "COOL": "AWESOMEN",
+    "EAT": "EATING",
+    "EATFOOD": "EATING",
+    "YUM": "EATING",
+    "SAD": "CRY",
+    "CRYING": "SOB",
+    "HAPPY": "SMILE"
+};
+
 /**
  * Reads token from cache. Returns null if missing or expired.
  */
@@ -241,6 +266,7 @@ if (require.main === module) {
         console.log(JSON.stringify({ 
             status: "success", 
             supportedEmojis: SUPPORTED_EMOJIS,
+            aliases: EMOJI_ALIASES,
             count: Object.keys(SUPPORTED_EMOJIS).length
         }));
         process.exit(0);
@@ -251,16 +277,24 @@ if (require.main === module) {
         process.exit(1);
     }
     
-    // Validate emoji type (case-insensitive fix)
+    // Validate emoji type (case-insensitive + alias fix)
     let finalEmojiType = params.emojiType;
-    if (!SUPPORTED_EMOJIS[finalEmojiType]) {
-        const upper = finalEmojiType.toUpperCase();
-        if (SUPPORTED_EMOJIS[upper]) {
-            console.warn(`Warning: Auto-corrected emoji type '${finalEmojiType}' to '${upper}'`);
-            finalEmojiType = upper;
-        } else {
-            console.warn(`Warning: Unknown emoji type '${finalEmojiType}'. Attempting to send anyway (Feishu might reject it).`);
-        }
+    let upper = finalEmojiType.toUpperCase();
+
+    // 1. Check direct match (exact or upper)
+    if (SUPPORTED_EMOJIS[finalEmojiType]) {
+        // perfect match, do nothing
+    } else if (SUPPORTED_EMOJIS[upper]) {
+        console.warn(`Warning: Auto-corrected emoji type '${finalEmojiType}' to '${upper}'`);
+        finalEmojiType = upper;
+    } 
+    // 2. Check Alias
+    else if (EMOJI_ALIASES[upper]) {
+        console.warn(`Warning: Mapped alias '${finalEmojiType}' to '${EMOJI_ALIASES[upper]}'`);
+        finalEmojiType = EMOJI_ALIASES[upper];
+    }
+    else {
+        console.warn(`Warning: Unknown emoji type '${finalEmojiType}'. Attempting to send anyway (Feishu might reject it).`);
     }
 
     (async () => {
@@ -275,4 +309,4 @@ if (require.main === module) {
     })();
 }
 
-module.exports = { getTenantAccessToken, addReaction, SUPPORTED_EMOJIS };
+module.exports = { getTenantAccessToken, addReaction, SUPPORTED_EMOJIS, EMOJI_ALIASES };
