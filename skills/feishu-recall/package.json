@@ -1,0 +1,19 @@
+{
+  "name": "feishu-recall",
+  "version": "1.0.0",
+  "description": "Feishu message recall skill for OpenClaw",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "feishu",
+    "recall",
+    "delete",
+    "openclaw",
+    "skill"
+  ],
+  "author": "OpenClaw",
+  "license": "MIT",
+  "dependencies": {}
+}
