@@ -10,12 +10,13 @@ This skill allows the bot to add emoji reactions to Feishu messages using the Op
 
 ## 🚀 Setup & Configuration
 
-### 1. Feishu Permissions
-To use this skill, your Feishu App needs the following permission:
-- **Scope:** `im:message.reactions:write_only` (Create reactions)
+### 1. Feishu Permissions (Critical!)
+To use this skill, your Feishu App MUST have the following permission enabled in the Developer Console:
+- **Scope:** `im:message.reactions:write_only` (Create reactions / 给消息添加表情回复)
+- **Note:** You must create a new app version and publish it for permission changes to take effect.
 
 ### 2. Configuration (`config.json`)
-Create or edit `config.json` in the skill directory:
+Create `config.json` in the skill directory based on `config.example.json`:
 
 ```json
 {
@@ -24,7 +25,8 @@ Create or edit `config.json` in the skill directory:
 }
 ```
 
-> **Note:** Do not commit `config.json` with real credentials if publishing publicly!
+> **Security Note:** Do not commit `config.json` with real credentials if publishing publicly!
+> **Fallback:** You can also set `FEISHU_APP_ID` and `FEISHU_APP_SECRET` as environment variables.
 
 ## 📝 Usage
 
@@ -43,6 +45,33 @@ node index.js '{"messageId": "om_123456...", "emojiType": "THUMBSUP"}'
 1.  **Get Token:** Obtains a `tenant_access_token` using the configured App ID and Secret.
 2.  **Call API:** Sends a `POST` request to `https://open.feishu.cn/open-apis/im/v1/messages/:message_id/reactions` with the specified emoji type.
 
-## ⚠️ Limitations
-- Only supports emoji types defined by Feishu.
-- Reaction permissions must be granted to the bot.
+## ⚠️ Troubleshooting & Pitfalls (FAQ)
+
+### 1. Error: `Invalid parameter type in json: reaction_type` (Code 9499)
+- **Cause:** You might be sending the emoji type as a simple string.
+- **Fix:** The API requires a nested object structure: `{"reaction_type": {"emoji_type": "THUMBSUP"}}`. This skill handles this automatically, but ensure your `emojiType` input is just the string (e.g., `"THUMBSUP"`).
+
+### 2. Error: `No permission` or `Access denied`
+- **Cause:** The app lacks the `im:message.reactions:write_only` permission.
+- **Fix:** Go to Feishu Developer Console -> Permissions -> Search "reaction" -> Add `im:message.reactions:write_only` -> **Create Version & Publish**.
+
+### 3. Error: `Invalid parameter value: "thumbsup"`
+- **Cause:** Emoji types are **case-sensitive** and usually UPPERCASE.
+- **Fix:** Use `THUMBSUP`, not `thumbsup`. Refer to the official list.
+
+### 4. Error: `HTTP Error: 400 Bad Request` (Token invalid)
+- **Cause:** `appId` or `appSecret` is incorrect, or the token expired (the script fetches a new one each run, so expiration is unlikely unless the credentials are wrong).
+- **Fix:** Check `config.json` or environment variables.
+
+### 5. Reaction doesn't appear?
+- **Cause:** Feishu limits specific emojis or the message might be too old / deleted.
+- **Check:** Ensure the `messageId` is correct and exists.
+
+## 🧪 Valid Emoji List (Partial)
+- `THUMBSUP` (👍)
+- `HEART` (❤️)
+- `OK` (👌)
+- `APPLAUSE` (👏)
+- `MUSCLE` (💪)
+- `FINGERHEART` (🫰)
+- ...and many more.
