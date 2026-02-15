@@ -110,6 +110,7 @@ When you decide to **REPLY** (Verdict: REPLY) in a group chat, you MUST append t
 ```text
 ---
 > (Debug: [SENTINEL] Verdict: REPLY | Reason: ...)
+
 *Is this helpful? React 👍 (Good) or 🤫 (Too Noisy)*
 ```
 *(Note: The Debug line provides transparency for RLHF but stays visually recessive.)*
