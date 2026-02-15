@@ -56,7 +56,15 @@ node index.js '{"messageId": "om_123456...", "emojiType": "THUMBSUP"}'
 ### 2. How do I know which Emojis are supported?
 Run the skill with `{"list": true}` to get the full supported list, or refer to the "Valid Emoji List" below.
 
-### 3. Error: `Invalid parameter type in json: reaction_type` (Code 9499)
+### 3. Find Latest Message ID
+If you don't know the `messageId`, you can ask the skill to find the latest message in a chat:
+
+```bash
+node index.js '{"findLatest": true, "chatId": "oc_..."}'
+```
+**Output:** `{"status": "success", "messageId": "om_..."}`
+
+### 4. List Supported Emojis
 - **Cause:** You might be sending the emoji type as a simple string.
 - **Fix:** The API requires a nested object structure: `{"reaction_type": {"emoji_type": "THUMBSUP"}}`. This skill handles this automatically.
 

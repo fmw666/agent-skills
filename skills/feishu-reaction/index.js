@@ -191,6 +191,51 @@ async function getTenantAccessToken() {
 }
 
 /**
+ * Finds the latest message ID in a chat.
+ * @param {string} token 
+ * @param {string} chatId 
+ * @returns {Promise<string>} message_id
+ */
+function findLatestMessage(token, chatId) {
+    return new Promise((resolve, reject) => {
+        const query = `container_id_type=chat&container_id=${chatId}&sort_type=ByCreateTimeDesc&page_size=1`;
+        const options = {
+            hostname: 'open.feishu.cn',
+            path: `/open-apis/im/v1/messages?${query}`,
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+        };
+
+        const req = https.request(options, (res) => {
+            let data = '';
+            res.on('data', (chunk) => data += chunk);
+            res.on('end', () => {
+                if (res.statusCode >= 200 && res.statusCode < 300) {
+                    try {
+                        const parsed = JSON.parse(data);
+                        if (parsed.code === 0 && parsed.data && parsed.data.items && parsed.data.items.length > 0) {
+                            resolve(parsed.data.items[0].message_id);
+                        } else {
+                            reject(new Error(`Feishu API Error or No Messages: ${JSON.stringify(parsed)}`));
+                        }
+                    } catch (e) {
+                        reject(new Error("Failed to parse message list response"));
+                    }
+                } else {
+                    reject(new Error(`HTTP Error: ${res.statusCode} ${res.statusMessage}`));
+                }
+            });
+        });
+
+        req.on('error', (e) => reject(e));
+        req.end();
+    });
+}
+
+/**
  * Adds a reaction to a message.
  * @param {string} token - The access token.
  * @param {string} messageId - The ID of the message to react to.
@@ -250,6 +295,7 @@ if (require.main === module) {
     if (args.length === 0) {
         console.error("Usage: node index.js '<json_params>'");
         console.error("Example: node index.js '{\"messageId\": \"om_...\", \"emojiType\": \"THUMBSUP\"}'");
+        console.error("Find Latest: node index.js '{\"findLatest\": true, \"chatId\": \"oc_...\"}'");
         process.exit(1);
     }
 
@@ -261,7 +307,7 @@ if (require.main === module) {
         process.exit(1);
     }
 
-    // LIST command: Output supported emojis
+    // LIST command
     if (params.list) {
         console.log(JSON.stringify({ 
             status: "success", 
@@ -272,36 +318,46 @@ if (require.main === module) {
         process.exit(0);
     }
 
-    if (!params.messageId || !params.emojiType) {
-        console.error("Error: messageId and emojiType are required.");
-        process.exit(1);
-    }
-    
-    // Validate emoji type (case-insensitive + alias fix)
-    let finalEmojiType = params.emojiType;
-    let upper = finalEmojiType.toUpperCase();
-
-    // 1. Check direct match (exact or upper)
-    if (SUPPORTED_EMOJIS[finalEmojiType]) {
-        // perfect match, do nothing
-    } else if (SUPPORTED_EMOJIS[upper]) {
-        console.warn(`Warning: Auto-corrected emoji type '${finalEmojiType}' to '${upper}'`);
-        finalEmojiType = upper;
-    } 
-    // 2. Check Alias
-    else if (EMOJI_ALIASES[upper]) {
-        console.warn(`Warning: Mapped alias '${finalEmojiType}' to '${EMOJI_ALIASES[upper]}'`);
-        finalEmojiType = EMOJI_ALIASES[upper];
-    }
-    else {
-        console.warn(`Warning: Unknown emoji type '${finalEmojiType}'. Attempting to send anyway (Feishu might reject it).`);
-    }
-
     (async () => {
         try {
             const token = await getTenantAccessToken();
+
+            // Find Latest Mode
+            if (params.findLatest) {
+                if (!params.chatId) {
+                    console.error("Error: chatId required for findLatest.");
+                    process.exit(1);
+                }
+                const msgId = await findLatestMessage(token, params.chatId);
+                console.log(JSON.stringify({ status: "success", messageId: msgId }));
+                return;
+            }
+
+            // Reaction Mode
+            if (!params.messageId || !params.emojiType) {
+                console.error("Error: messageId and emojiType are required (or use findLatest).");
+                process.exit(1);
+            }
+            
+            // Validate emoji type
+            let finalEmojiType = params.emojiType;
+            let upper = finalEmojiType.toUpperCase();
+
+            if (SUPPORTED_EMOJIS[finalEmojiType]) {
+                // perfect match
+            } else if (SUPPORTED_EMOJIS[upper]) {
+                console.warn(`Warning: Auto-corrected emoji type '${finalEmojiType}' to '${upper}'`);
+                finalEmojiType = upper;
+            } else if (EMOJI_ALIASES[upper]) {
+                console.warn(`Warning: Mapped alias '${finalEmojiType}' to '${EMOJI_ALIASES[upper]}'`);
+                finalEmojiType = EMOJI_ALIASES[upper];
+            } else {
+                console.warn(`Warning: Unknown emoji type '${finalEmojiType}'. Attempting to send anyway.`);
+            }
+
             const result = await addReaction(token, params.messageId, finalEmojiType);
             console.log(JSON.stringify({ status: "success", data: result, emoji: SUPPORTED_EMOJIS[finalEmojiType] }));
+
         } catch (error) {
             console.error(JSON.stringify({ status: "error", message: error.message }));
             process.exit(1);
@@ -309,4 +365,4 @@ if (require.main === module) {
     })();
 }
 
-module.exports = { getTenantAccessToken, addReaction, SUPPORTED_EMOJIS, EMOJI_ALIASES };
+module.exports = { getTenantAccessToken, addReaction, findLatestMessage, SUPPORTED_EMOJIS, EMOJI_ALIASES };
