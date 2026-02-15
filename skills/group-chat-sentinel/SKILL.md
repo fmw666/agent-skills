@@ -91,6 +91,7 @@ Before responding to ANY group chat message (unless directly `@mentioned`), you 
         - MUST use `feishu-reaction` skill (native tool often fails).
         - Command: `node skills/feishu-reaction/index.js '{"messageId": "om_...", "emojiType": "THUMBSUP"}'`
         - Repeat the command for each emoji in the combo.
+        - **Critical:** Do NOT send these emojis as text messages (e.g., "[赞]"). Use the API to attach them as Reactions.
 
 - **The "Strike" (Full Reply):**
     - Only when you have a **Solution**.
