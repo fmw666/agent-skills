@@ -21,12 +21,35 @@ These skills are designed to enhance context awareness, evolution capability, an
 
 ## Usage
 
-1. Clone this repository into your agent's workspace:
-   ```bash
-   git clone https://github.com/<your-username>/agent-skills.git skills/agent-skills
-   ```
+### Option 1: Install a Specific Skill (Recommended)
 
-2. Reference the skill in your `AGENTS.md` or system prompt:
+To avoid cloning the entire repository, you can download just the skill you need using **Sparse Checkout**:
+
+```bash
+# 1. Create a directory for skills
+mkdir -p skills/agent-skills && cd skills/agent-skills
+
+# 2. Initialize git with sparse checkout
+git init
+git remote add origin https://github.com/fmw666/agent-skills.git
+git config core.sparseCheckout true
+
+# 3. Whitelist the skill you want (e.g., group-chat-sentinel)
+echo "skills/group-chat-sentinel/" >> .git/info/sparse-checkout
+
+# 4. Pull
+git pull origin master
+```
+
+### Option 2: Clone Everything
+
+```bash
+git clone https://github.com/fmw666/agent-skills.git skills/agent-skills
+```
+
+## Integration
+
+Reference the skill in your `AGENTS.md` or system prompt:
    ```markdown
    Before responding, consult: skills/agent-skills/skills/group-chat-sentinel/SKILL.md
    ```
