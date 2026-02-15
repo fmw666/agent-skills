@@ -17,6 +17,17 @@ These skills are designed to enhance context awareness, evolution capability, an
     - **Nightly Review:** Automated log analysis for self-reflection.
 - **Integration:** Requires adding a mandatory check in your agent's system prompt or `AGENTS.md`.
 
+### 👂 [Feishu Active Listener](skills/feishu-active-listener/SKILL.md)
+
+**A proactive social engagement engine.**
+
+- **Purpose:** Analyzes group chat messages to detect social engagement opportunities *without* mentions.
+- **Features:**
+    - **Sentiment Analysis:** Detects celebratory or supportive contexts.
+    - **Opportunity Detection:** Identifies when to chime in (e.g., "congrats", "well done").
+    - **Noise Filter:** Ignores task-related keywords to avoid stealing work.
+- **Integration:** Can be run as a standalone service or integrated with Sentinel.
+
 ---
 
 ## Usage
