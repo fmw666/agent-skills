@@ -6,7 +6,16 @@ usage: node index.js '<json_message_object>'
 
 # Feishu Active Listener (飞书主动监听器)
 
-This skill implements the "Active Listener" pattern, allowing the bot to detect and respond to social cues in group chats without requiring explicit mentions. It works in tandem with the `group-chat-sentinel` to ensure high-quality, non-intrusive engagement.
+This skill implements the "Active Listener" pattern, allowing the bot to detect and respond to social cues in group chats without requiring explicit mentions.
+
+> **⚠️ CRITICAL RECOMMENDATION:**
+> This skill detects *opportunities*, but does not filter for *social context* (e.g., is it appropriate to speak now?).
+> **You are strongly advised to install [Group Chat Sentinel](../group-chat-sentinel/SKILL.md)** alongside this skill.
+>
+> - **Listener:** "I found a trigger!" (The Ear)
+> - **Sentinel:** "Should we actually reply?" (The Brain)
+>
+> *Running Listener without Sentinel may result in "over-eager" or spammy behavior.*
 
 ## 🚀 Setup & Configuration
 
@@ -58,6 +67,13 @@ If you are using `group-chat-sentinel`, this listener is already logically integ
 If running standalone, add this to your `HEARTBEAT.md` or schedule a Cron job:
 - **Command:** `node skills/feishu-active-listener/index.js '<last_message_json>'`
 - **Purpose:** To proactively scan for engagement opportunities even when not mentioned.
+
+## 📦 Dependencies & Companions
+
+| Skill | Relationship | Why you need it |
+| :--- | :--- | :--- |
+| **[Group Chat Sentinel](../group-chat-sentinel/SKILL.md)** | 🛡️ **Brain / Guardrail** | **Essential.** Prevents the listener from triggering on every "haha" or "congrats" when the mood isn't right. |
+| **Feishu Common** | 🔧 **Library** | Required for API calls (implicit dependency). |
 
 ## 📝 Usage Example
 
