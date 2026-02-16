@@ -1,0 +1,7 @@
+{
+  "name": "semantic-router",
+  "version": "1.0.0",
+  "description": "NLU core for OpenClaw",
+  "main": "index.js",
+  "dependencies": {}
+}
