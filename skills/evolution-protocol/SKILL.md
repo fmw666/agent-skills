@@ -1,6 +1,6 @@
 ---
 name: evolution-protocol
-description: MANDATORY: The Standard Operating Procedure (SOP) for managing the Evolver Engine. Read this BEFORE attempting to start, stop, or modify the evolution loop.
+description: "MANDATORY: The Standard Operating Procedure (SOP) for managing the Evolver Engine. Read this BEFORE attempting to start, stop, or modify the evolution loop."
 ---
 
 # 🧬 Evolution Protocol (进化协议 v1.2)
