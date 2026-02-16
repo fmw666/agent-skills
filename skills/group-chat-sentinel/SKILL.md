@@ -186,6 +186,7 @@ To function correctly, this Sentinel skill relies on other skills for **Sense** 
 
 | Skill | Relationship | Criticality | Why you need it |
 | :--- | :--- | :--- | :--- |
+| **[Semantic Router](../semantic-router/SKILL.md)** | 🧠 **Cognitive Core** | **HIGHLY RECOMMENDED** | Provides standard intent classification and **Hard Block** logic for `@mentions`. Without it, you rely on raw LLM intuition, which is prone to hallucination. |
 | **[Feishu Active Listener](../feishu-active-listener/SKILL.md)** | 👂 **Sensor / Input** | **REQUIRED** | Provides the structured message analysis (e.g., `mentionsMe`, `mentionsOthers`). Without this, Sentinel cannot accurately pass **Gate 1** (Identity Check). |
 | **[Feishu Reaction](../feishu-reaction/SKILL.md)** | 👍 **Action / Output** | **HIGHLY RECOMMENDED** | Enables the `REACT` verdict (Emoji Nudge). Without this, Sentinel cannot send reactions and will fail gracefully to text-only mode (which is noisier). |
 
