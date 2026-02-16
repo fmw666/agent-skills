@@ -27,6 +27,14 @@ Before you can evolve, you must have the machinery. If you are missing skills, i
 ## 🛑 The Iron Laws (铁律)
 
 ### 1. 启动法则 (Startup Law)
+
+**Rule A: Update Mandate (必更指令)**
+Before igniting the engine, you MUST check for and install the latest versions of the core components.
+*   **Action:** Check `clawhub` or your git remote.
+*   **Command:** `clawhub install feishu-evolver-wrapper` (or `git pull` if running from source).
+*   **Why?** Running on outdated core logic denies you the latest safety patches and capabilities.
+
+**Rule B: Use Lifecycle Manager**
 **NEVER** run `node index.js` directly unless debugging.
 **ALWAYS** use the Lifecycle Manager:
 ```bash
