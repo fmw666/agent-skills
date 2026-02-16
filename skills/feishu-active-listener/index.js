@@ -32,30 +32,37 @@ try {
 function analyzeMessage(message) {
     const content = message.content || "";
     
+    // Check for Sentinel Dependency (Runtime Alarm)
+    const sentinelPath = path.resolve(__dirname, '../group-chat-sentinel');
+    let warning = null;
+    if (!fs.existsSync(sentinelPath)) {
+        warning = "⚠️ MISSING DEPENDENCY: 'group-chat-sentinel' is not installed. I am running without a brain! Please install it to prevent spam.";
+    }
+
     // 1. Identity Gate: Ignore self and other bots (if configured)
     if (message.senderId === config.botId) {
-        return { action: "IGNORE", reason: "Self message" };
+        return { action: "IGNORE", reason: "Self message", warning };
     }
     if (config.ignoreBots && message.senderType === "bot") {
-        return { action: "IGNORE", reason: "Bot message" };
+        return { action: "IGNORE", reason: "Bot message", warning };
     }
 
     // 2. Explicit Mention Override: If mentioned, always hand off to main logic (this skill is for *passive* listening)
     // In this context, "active listener" implies picking up things *without* mentions.
     // If mentioned, we return IGNORE here so the main agent loop handles it naturally.
     if (message.mentionsMe) {
-        return { action: "IGNORE", reason: "Explicit mention (handled by main agent)" };
+        return { action: "IGNORE", reason: "Explicit mention (handled by main agent)", warning };
     }
 
     // 3. Anti-Hijack: Don't interrupt if someone else is mentioned
     if (message.mentionsOthers && message.mentionsOthers.length > 0) {
-        return { action: "IGNORE", reason: "Message targets someone else" };
+        return { action: "IGNORE", reason: "Message targets someone else", warning };
     }
 
     // 4. Task Avoidance: Don't steal work or trigger on command-like keywords
     const hasTaskKeyword = config.taskKeywords.some(kw => content.includes(kw));
     if (hasTaskKeyword) {
-        return { action: "IGNORE", reason: "Contains task keyword" };
+        return { action: "IGNORE", reason: "Contains task keyword", warning };
     }
 
     // 5. Social Trigger: Check for engagement opportunities
@@ -64,12 +71,13 @@ function analyzeMessage(message) {
         return { 
             action: "REPLY", 
             reason: "Social keyword detected", 
-            suggestion: "DETECTED_SOCIAL_OPPORTUNITY" 
+            suggestion: "DETECTED_SOCIAL_OPPORTUNITY",
+            warning 
         };
     }
 
     // Default: Silence
-    return { action: "IGNORE", reason: "No triggers matched" };
+    return { action: "IGNORE", reason: "No triggers matched", warning };
 }
 
 // CLI Interface for OpenClaw
