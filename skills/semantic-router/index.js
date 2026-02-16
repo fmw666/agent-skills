@@ -40,6 +40,17 @@ function route(text, myName = "OpenClaw") {
     } else if (text.includes("@")) {
         // If @ someone else, definitely NOT me
         target = "specific_user"; 
+        // SAFETY OVERRIDE: If targeting someone else, FORCE intent to IGNORE/UNKNOWN to prevent LLM from hallucinating relevance.
+        // Even if keywords match, we must not interrupt.
+        return {
+            intent: "ignore", // Special intent for Sentinel to catch
+            target: "specific_user",
+            urgency: "low",
+            sentiment: "neutral",
+            entities: [],
+            safety: "safe",
+            _note: "hard_block_other_mention"
+        };
     } else {
         // No mentions at all? 
         // Only consider "me" if context implies continuation (handled by Sentinel memory, not here)
