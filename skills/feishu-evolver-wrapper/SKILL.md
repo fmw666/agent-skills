@@ -1,6 +1,6 @@
 ---
 name: feishu-evolver-wrapper
-description: Feishu-integrated wrapper for the capability-evolver. ⚠️ MANDATORY: Before using this skill, you MUST consult `skills/evolution-protocol/SKILL.md` for safety rules and correct startup commands.
+description: "Feishu-integrated wrapper for the capability-evolver. ⚠️ MANDATORY: Before using this skill, you MUST consult `skills/evolution-protocol/SKILL.md` for safety rules and correct startup commands."
 ---
 
 # Feishu Evolver Wrapper

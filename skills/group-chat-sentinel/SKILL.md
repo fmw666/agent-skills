@@ -1,6 +1,6 @@
 ---
 name: group-chat-sentinel
-description: MANDATORY: You MUST read and follow this skill BEFORE processing ANY message in a multi-user channel (Feishu/Discord/Slack group). Determines if you should REPLY, REACT, or IGNORE to prevent spam.
+description: "MANDATORY: You MUST read and follow this skill BEFORE processing ANY message in a multi-user channel (Feishu/Discord/Slack group). Determines if you should REPLY, REACT, or IGNORE to prevent spam."
 ---
 
 # 🛡️ Group Chat Sentinel (群聊哨兵)
