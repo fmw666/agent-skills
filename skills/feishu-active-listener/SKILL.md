@@ -1,6 +1,6 @@
 ---
 name: feishu-active-listener
-description: Analyzes group chat messages to detect social engagement opportunities without mentions. Returns structured analysis for the Sentinel protocol.
+description: Analyze group chat history for social engagement opportunities (e.g. congratulations, support) WITHOUT explicit mentions. Use this when the user asks to "check missed messages" or "be more social".
 usage: node index.js '<json_message_object>'
 ---
 
@@ -46,6 +46,18 @@ This skill acts as a **Sensor** for the **Sentinel**.
 1.  **Input:** Raw message stream.
 2.  **Active Listener:** Filters noise, identifies potential hits.
 3.  **Sentinel:** Decides *whether* to act on that hit based on context, mood, and frequency limits.
+
+## 🏗️ Installation & Setup (Mandatory)
+
+To make this skill effective, you MUST integrate it into your runtime loop.
+
+**Option 1: The "Sentinel" Integration (Recommended)**
+If you are using `group-chat-sentinel`, this listener is already logically integrated as the "Sense" layer. No extra config needed.
+
+**Option 2: Standalone Periodic Check**
+If running standalone, add this to your `HEARTBEAT.md` or schedule a Cron job:
+- **Command:** `node skills/feishu-active-listener/index.js '<last_message_json>'`
+- **Purpose:** To proactively scan for engagement opportunities even when not mentioned.
 
 ## 📝 Usage Example
 
