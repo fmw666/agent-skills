@@ -18,36 +18,45 @@ const SCHEMA = {
 };
 
 /**
- * Main Router Function
- * Uses the Agent's own LLM capabilities (via reflection or loopback) to analyze text.
- * Since this runs as a tool, we might need to rely on the calling Agent to do the thinking,
- * OR we use a lightweight specialized model call if available.
- * 
- * For v1, we will simulate a "Mock Router" that uses simple regex heuristics 
- * to prove the architecture, as calling LLM from within a tool script is complex 
- * without an API key. 
- * 
- * TODO: Upgrade to real LLM call in v2.
+ * Main Router Function (v1.1 - Strict Mode)
  */
 function route(text, myName = "OpenClaw") {
     const lower = text.toLowerCase();
+    const myNameLower = myName.toLowerCase();
     
-    // Heuristic 1: Targeting
+    // Heuristic 1: Targeting (STRICT MODE)
+    // Default: Nobody (Silence is golden)
     let target = "nobody";
-    if (lower.includes(`@${myName.toLowerCase()}`) || lower.includes(myName.toLowerCase())) {
+    
+    // Identity Keywords (Aliases)
+    const aliases = [myNameLower, 'bot', 'agent', '小范', '炎柱', 'openclaw'];
+    
+    // Check for explicit mention or aliases
+    const hasAlias = aliases.some(a => lower.includes(a));
+    const hasAtMe = lower.includes(`@${myNameLower}`);
+    
+    if (hasAtMe || hasAlias) {
         target = "me";
     } else if (text.includes("@")) {
-        target = "specific_user";
+        // If @ someone else, definitely NOT me
+        target = "specific_user"; 
+    } else {
+        // No mentions at all? 
+        // Only consider "me" if context implies continuation (handled by Sentinel memory, not here)
+        // Router sees single message: so it's "everyone" or "nobody".
+        // Let's call it "everyone" (broadcast) but Sentinel should filter it.
+        target = "everyone";
     }
 
     // Heuristic 2: Intent
     let intent = "chit_chat";
-    if (lower.includes("?") || lower.includes("怎么") || lower.includes("what")) intent = "question";
-    if (lower.includes("run") || lower.includes("exec") || lower.includes("执行")) intent = "command";
+    if (lower.includes("?") || lower.includes("怎么") || lower.includes("what") || lower.includes("如何") || lower.includes("求助")) intent = "question";
+    if (lower.includes("run") || lower.includes("exec") || lower.includes("执行") || lower.includes("启动")) intent = "command";
     
     // Heuristic 3: Safety
     let safety = "safe";
-    if (lower.includes("delete") || lower.includes("rm -rf") || lower.includes("format")) safety = "risky";
+    const dangerWords = ["delete", "rm -rf", "format", "删除", "清空", "销毁", "shutdown", "reboot"];
+    if (dangerWords.some(w => lower.includes(w))) safety = "risky";
 
     return {
         intent,
@@ -56,7 +65,7 @@ function route(text, myName = "OpenClaw") {
         sentiment: "neutral",
         entities: [],
         safety,
-        _note: "v1_heuristic_mode" // Mark as heuristic so we know to upgrade later
+        _note: "v1.1_strict_heuristic"
     };
 }
 
