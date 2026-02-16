@@ -180,6 +180,15 @@ To truly learn, you must reflect.
 - **Command:** `node skills/group-chat-sentinel/analyze_logs.js`
 - **Objective:** This script analyzes the accumulated feedback (successes/failures), generates new heuristics, and updates your internal "Social Intuition" model.
 
+## 📦 Dependencies & Companions
+
+To function correctly, this Sentinel skill relies on other skills for **Sense** and **Action**.
+
+| Skill | Relationship | Criticality | Why you need it |
+| :--- | :--- | :--- | :--- |
+| **[Feishu Active Listener](../feishu-active-listener/SKILL.md)** | 👂 **Sensor / Input** | **REQUIRED** | Provides the structured message analysis (e.g., `mentionsMe`, `mentionsOthers`). Without this, Sentinel cannot accurately pass **Gate 1** (Identity Check). |
+| **[Feishu Reaction](../feishu-reaction/SKILL.md)** | 👍 **Action / Output** | **HIGHLY RECOMMENDED** | Enables the `REACT` verdict (Emoji Nudge). Without this, Sentinel cannot send reactions and will fail gracefully to text-only mode (which is noisier). |
+
 ## 🚫 Forbidden Behaviors
 - **Never** apologize for silence. (Silence is golden.)
 - **Never** interrupt a two-human conversation unless asked.
