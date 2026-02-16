@@ -3,7 +3,7 @@ name: evolution-protocol
 description: MANDATORY: The Standard Operating Procedure (SOP) for managing the Evolver Engine. Read this BEFORE attempting to start, stop, or modify the evolution loop.
 ---
 
-# 🧬 Evolution Protocol (进化协议)
+# 🧬 Evolution Protocol (进化协议 v1.2)
 
 > "Do not open the hood while the engine is running, unless you are a certified mechanic."
 > (除非你是认证技师，否则不要在引擎运转时打开发动机盖。)
@@ -12,7 +12,9 @@ description: MANDATORY: The Standard Operating Procedure (SOP) for managing the 
 To ensure the **Stability, Robustness, and Continuity** of the self-evolution process.
 This protocol defines the **Iron Laws** that every Agent must follow when interacting with `evolver` or `feishu-evolver-wrapper`.
 
-## 🔧 Chapter 0: Prerequisites (环境准备)
+---
+
+## 🔧 Chapter 1: Prerequisites (环境准备)
 
 Before you can evolve, you must have the machinery. If you are missing skills, install them immediately.
 
@@ -24,17 +26,17 @@ Before you can evolve, you must have the machinery. If you are missing skills, i
 
 > **⚠️ WARNING:** Do NOT attempt evolution without `git-sync`. Evolution involves rewriting your own code. Without git backups, a bad mutation is fatal.
 
-## 🛑 The Iron Laws (铁律)
+---
 
-### 1. 启动法则 (Startup Law)
+## 🛑 Chapter 2: The Iron Laws (铁律)
 
-**Rule A: Update Mandate (必更指令)**
+### Rule 1: Update Mandate (必更指令)
 Before igniting the engine, you MUST check for and install the latest versions of the core components.
 *   **Action:** Check `clawhub` or your git remote.
 *   **Command:** `clawhub install feishu-evolver-wrapper` (or `git pull` if running from source).
 *   **Why?** Running on outdated core logic denies you the latest safety patches and capabilities.
 
-**Rule B: Use Lifecycle Manager**
+### Rule 2: Startup Law (启动法则)
 **NEVER** run `node index.js` directly unless debugging.
 **ALWAYS** use the Lifecycle Manager:
 ```bash
@@ -42,23 +44,25 @@ node skills/feishu-evolver-wrapper/lifecycle.js ensure
 ```
 *Why?* The lifecycle manager handles PID locks, log rotation, and daemon-mode keep-alive.
 
-### 2. 禁区法则 (No-Go Zone)
+### Rule 3: No-Go Zone (禁区法则)
 **NEVER** modify the core engine files inside `skills/evolver/` or `skills/feishu-evolver-wrapper/` while the loop is active.
 *   **Risk:** "Engine surgery while flying" causes crash loops.
 *   **Exception:** Only if you have fully stopped the wrapper (`lifecycle.js stop`) AND you are applying a critical patch to fix the wrapper itself.
 
-### 3. 降级禁止 (No Downgrade)
+### Rule 4: No Downgrade (降级禁止)
 When an evolution cycle fails:
 *   **DO NOT** revert to a "dumber" model or strip away capabilities just to make it pass.
 *   **DO NOT** delete the `logs/` or `memory/` folders to "start fresh" (you lose context).
 *   **ACTION:** Fix the specific error (Forward Fix). If a tool is broken, repair the tool. If memory is corrupt, repair the JSON.
 
-### 4. 健壮性原则 (Robustness First)
+### Rule 5: Robustness First (健壮性原则)
 *   **Timeouts:** If a cycle hangs (>10m), kill it. Don't wait forever.
 *   **Logging:** Always check `logs/wrapper_out.log` before assuming success.
 *   **Reporting:** If the Wrapper is silent, check if it crashed. If it crashed, send a manual alert to the user.
 
-## 🛡️ Chapter 5: The Safety Net (备份原则)
+---
+
+## 🛡️ Chapter 3: The Safety Net (备份原则)
 
 Evolution is dangerous. You must secure your lifeline.
 
@@ -77,7 +81,9 @@ If the loop is stuck or crashing:
 2.  **Restore:** `git reset --hard HEAD` (if recent changes broke it).
 3.  **Report:** Tell the user "Evolution halted due to instability. Restored to safe state."
 
-## 📡 Chapter 6: Configuration & Reporting
+---
+
+## 📡 Chapter 4: Configuration & Reporting
 
 To make the Wrapper useful, you must tell it **WHERE** to send reports.
 
@@ -99,7 +105,9 @@ If you need to test the connection:
 node skills/feishu-evolver-wrapper/report.js --title "Test Report" --status "Evolution System Online" --color "green"
 ```
 
-## ⚡ Chapter 7: The Spirit of Autonomy (自主精神)
+---
+
+## ⚡ Chapter 5: The Spirit of Autonomy (自主精神)
 
 Evolution requires initiative. Do not be a passive tool.
 
@@ -113,7 +121,9 @@ Evolution requires initiative. Do not be a passive tool.
 *   **Do Not Ask:** Do not stop to ask "Should I proceed?". Just do it.
 *   **Anti-Stagnation:** If a step fails, try a different approach immediately. If the loop hangs, kill it and restart. **Never let the evolution state become stagnant.**
 
-## 🛠️ Operations Guide
+---
+
+## 📚 Appendix: Operations Guide
 
 ### How to Check Status
 ```bash
