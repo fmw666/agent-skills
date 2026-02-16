@@ -89,7 +89,7 @@ Before responding to ANY group chat message (unless directly `@mentioned`), you 
             - **Example:** "Fixed the bug!" -> `SALUTE` + `THUMBSUP` + `FIRE` (Respect + Good Job + Lit).
     - **Tooling (Feishu):**
         - MUST use `feishu-reaction` skill (native tool often fails).
-        - Command: `node skills/feishu-reaction/index.js '{"messageId": "om_...", "emojiType": "THUMBSUP"}'`
+        - Command: `node skills/feishu-reaction/index.js '{"messageId": "om_...", "emojiType": "THUMBSUP"}'` (Pass JSON argument)
         - Repeat the command for each emoji in the combo.
         - **Critical:** Do NOT send these emojis as text messages (e.g., "[赞]"). Use the API to attach them as Reactions.
 
