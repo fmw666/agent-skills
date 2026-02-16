@@ -69,6 +69,28 @@ If the loop is stuck or crashing:
 2.  **Restore:** `git reset --hard HEAD` (if recent changes broke it).
 3.  **Report:** Tell the user "Evolution halted due to instability. Restored to safe state."
 
+## 📡 Chapter 6: Configuration & Reporting
+
+To make the Wrapper useful, you must tell it **WHERE** to send reports.
+
+### 1. Configure the Target (汇报对象)
+By default, the Wrapper may not know where to send logs. You must configure it.
+
+**Method A: Environment Variable (Recommended)**
+Set `LOG_TARGET` in your `.env` file to the `chat_id` where you want reports.
+```bash
+LOG_TARGET=oc_1234567890abcdef...
+```
+
+**Method B: Hardcoded Config (Fallback)**
+Edit `skills/feishu-evolver-wrapper/index.js` (search for `FEISHU_LOG_GROUP`) or `config.json` if available.
+
+### 2. How to Trigger a Manual Report
+If you need to test the connection:
+```bash
+node skills/feishu-evolver-wrapper/report.js --title "Test Report" --status "Evolution System Online" --color "green"
+```
+
 ## 🛠️ Operations Guide
 
 ### How to Check Status
