@@ -1,0 +1,20 @@
+{
+  "name": "telegram-evolver-wrapper",
+  "version": "1.0.0",
+  "description": "Telegram Bot integration wrapper for the evolver evolution engine.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "openclaw",
+    "evolver",
+    "telegram"
+  ],
+  "author": "OpenClaw",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.3"
+  }
+}
