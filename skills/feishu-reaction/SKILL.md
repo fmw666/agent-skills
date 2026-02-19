@@ -40,5 +40,21 @@ node skills/feishu-reaction/index.js '{"messageId": "om_...", "emojiType": "DONE
 - `emojiType`: (必填) 飞书定义的英文表情代码字符串。
 - `list`: (可选) 传入 `{"list": true}` 可查询本地支持的所有 181 个表情代码及其含义映射。
 
+## 常见问题解答 (Q&A)
+
+**Q: 如果找不到 `appId` 或 `appSecret` 怎么办？**
+**A:** 请检查以下位置：
+1. 本地 `openclaw.json` 配置文件中的 `channels.feishu` 部分。
+2. 环境变量 `FEISHU_APP_ID` 和 `FEISHU_APP_SECRET`。
+3. 询问系统管理员获取合法的飞书自建应用凭证。
+
+**Q: 无法在上下文中定位到 `messageId` 怎么办？**
+**A:** 
+1. **获取最新消息 ID**: 本技能提供内置探测能力，可调用 `{"findLatest": true, "chatId": "当前群聊ID"}` 来自动获取该会话中最后一条消息的 ID。
+2. **默认回退**: 若彻底无法获取，请放弃 Reaction 动作，转为使用标准的文本回复。
+
+**Q: 执行后返回 "reaction type is invalid"？**
+**A:** 这是一个典型的代码错误。请查阅顶部的【官方参考】链接核对 `emoji_type`，或运行 `{"list": true}` 查看当前本地映射库支持的 181 个标准代码。
+
 ---
 *本技能由通用 AI 协作协议优化，旨在提升飞书平台的人机交互体验。*
